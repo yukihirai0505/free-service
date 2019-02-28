@@ -1,7 +1,11 @@
 {
   "version": 2,
-  "name": "go",
+  "alias": "yabaiwebyasan.now.sh",
+  "name": "go-api",
   "builds": [
-    { "src": "*.go", "use": "@now/go" }
+    {
+      "src": "*.go",
+      "use": "@now/go"
+    }
   ]
 }

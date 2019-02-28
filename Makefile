@@ -9,4 +9,4 @@ help:
 
 .PHONY: deploy
 deploy: ## Deploy
-	@now ./api
+	@cd ./api && now && now alias && cd ..

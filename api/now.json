@@ -4,7 +4,8 @@
   "name": "go-api",
   "env": {
     "MONGO_USER": "@mongo-user",
-    "MONGO_PASS": "@mongo-pass"
+    "MONGO_PASS": "@mongo-pass",
+    "REDIS_PASS": "@redis-pass"
   },
   "builds": [
     {

@@ -3,7 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/globalsign/mgo/bson"
+	"github.com/go-redis/redis"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
@@ -11,16 +12,8 @@ import (
 	"time"
 )
 
-type Person struct {
-	ID   bson.ObjectId `bson:"_id"`
-	Name string        `bson:"name"`
-	Age  int           `bson:"age"`
-}
-
-func Handler(w http.ResponseWriter, r *http.Request) {
-	mongoDBUser := os.Getenv("MONGO_USER")
-	mongoDBPass := os.Getenv("MONGO_PASS")
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://" + mongoDBUser + ":" + mongoDBPass + "@cluster0-qqdp9.mongodb.net/test"))
+func testMongo() {
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://" + os.Getenv("MONGO_USER") + ":" + os.Getenv("MONGO_PASS") + "@cluster0-qqdp9.mongodb.net/test"))
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -37,6 +30,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 	id := res.InsertedID
 	fmt.Println(id)
-	fmt.Println(mongoDBPass)
+}
+
+func testRedis() {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "redis-10054.c13.us-east-1-3.ec2.cloud.redislabs.com:10054",
+		Password: os.Getenv("REDIS_PASS"),
+		DB:       0,
+	})
+	pong, err := client.Ping().Result()
+	fmt.Println(pong, err)
+
+	client.Set("hello", "world", 0)
+	val, err := client.Get("hello").Result()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("hello", val)
+}
+
+func Handler(w http.ResponseWriter, r *http.Request) {
+	//testMongo()
+	testRedis()
 	fmt.Fprintf(w, "Hello")
 }

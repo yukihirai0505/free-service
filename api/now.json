@@ -2,6 +2,10 @@
   "version": 2,
   "alias": "yabaiwebyasan.now.sh",
   "name": "go-api",
+  "env": {
+    "MONGO_USER": "@mongo-user",
+    "MONGO_PASS": "@mongo-pass"
+  },
   "builds": [
     {
       "src": "*.go",

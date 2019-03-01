@@ -1,16 +1,42 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"github.com/yukihirai0505/free-service/api/conf"
-	"log"
+	"github.com/globalsign/mgo/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
 	"os"
+	"time"
 )
 
-// mongodb://yabaiwebyasan:<PASSWORD>@cluster0-shard-00-00-lrlto.mongodb.net:27017,cluster0-shard-00-01-lrlto.mongodb.net:27017,cluster0-shard-00-02-lrlto.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true
+type Person struct {
+	ID   bson.ObjectId `bson:"_id"`
+	Name string        `bson:"name"`
+	Age  int           `bson:"age"`
+}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
-	conf.LoadEnv()
-	log.Println(os.Getenv("MONGO_USER"))
-	fmt.Fprintf(w, "I'm hoge")
+	mongoDBUser := os.Getenv("MONGO_USER")
+	mongoDBPass := os.Getenv("MONGO_PASS")
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://" + mongoDBUser + ":" + mongoDBPass + "@cluster0-qqdp9.mongodb.net/test"))
+	if err != nil {
+		fmt.Println(err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		fmt.Println(err)
+	}
+	collection := client.Database("test").Collection("test")
+	res, err := collection.InsertOne(context.Background(), bson.M{"hello": "world"})
+	if err != nil {
+		fmt.Println(err)
+	}
+	id := res.InsertedID
+	fmt.Println(id)
+	fmt.Println(mongoDBPass)
+	fmt.Fprintf(w, "Hello")
 }

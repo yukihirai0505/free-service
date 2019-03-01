@@ -1,5 +1,13 @@
 ## Get Started
 
+Create Now account
+=> https://zeit.co/now
+
+Create Free mongodb
+=> https://mlab.com/
+
+Create Free Redis
+=> https://redislabs.com/
 
 ```
 // TODO: automate them

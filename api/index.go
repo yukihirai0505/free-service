@@ -50,7 +50,7 @@ func testRedis() {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	//testMongo()
+	testMongo()
 	testRedis()
 	fmt.Fprintf(w, "Hello")
 }
